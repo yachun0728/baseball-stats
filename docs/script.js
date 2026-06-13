@@ -3,6 +3,27 @@ async function loadJSON(path) {
   return res.json();
 }
 
+// 手機版漢堡選單
+(function () {
+  const toggle = document.getElementById("menu-toggle");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+
+  function closeMenu() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("open");
+  }
+
+  toggle.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+    overlay.classList.toggle("open");
+  });
+
+  overlay.addEventListener("click", closeMenu);
+
+  sidebar.querySelectorAll("a").forEach(a => a.addEventListener("click", closeMenu));
+})();
+
 function renderKVTable(container, obj, labels) {
   let html = "<table>";
   for (const [key, label] of Object.entries(labels)) {
