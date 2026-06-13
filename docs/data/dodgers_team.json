@@ -1,0 +1,22 @@
+{
+  "season": 2025,
+  "team": "Los Angeles Dodgers",
+  "batting": {
+    "avg": ".253",
+    "obp": ".327",
+    "slg": ".441",
+    "ops": ".768",
+    "homeRuns": 244,
+    "runs": 825,
+    "rbi": 791,
+    "stolenBases": 88
+  },
+  "pitching": {
+    "era": "3.95",
+    "whip": "1.26",
+    "strikeOuts": 1505,
+    "saves": 46,
+    "wins": 93,
+    "losses": 69
+  }
+}

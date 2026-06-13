@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>棒球數據分析入門 - 由淺入深</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<nav id="sidebar">
+  <h2>📊 棒球數據筆記</h2>
+  <ul>
+    <li><a href="#intro">前言</a></li>
+    <li><a href="#basic-batting">第一章・基礎打擊指標</a></li>
+    <li><a href="#basic-pitching">第二章・基礎投手指標</a></li>
+    <li><a href="#adv-batting">第三章・進階打擊指標</a></li>
+    <li><a href="#adv-pitching">第四章・進階投手指標</a></li>
+    <li><a href="#statcast">第五章・Statcast 數據</a></li>
+    <li><a href="#case-study">第六章・實戰案例：大谷翔平</a></li>
+    <li><a href="#resources">延伸閱讀</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<header id="intro">
+  <h1>棒球數據分析入門</h1>
+  <p class="subtitle">從基礎打擊率到 Statcast 進階指標，搭配道奇隊與大谷翔平的真實數據逐步說明</p>
+  <div class="callout">
+    <strong>怎麼讀這份筆記？</strong><br>
+    每一章難度遞增。第一、二章是電視轉播就會出現的基本數字；第三、四章是近 20 年「Sabermetrics 革命」後業界標準；
+    第五章 Statcast 是 2015 年後用追蹤系統量出來的物理數據，也是目前最前沿的分析方式。
+  </div>
+</header>
+
+<!-- ===================== 第一章 ===================== -->
+<section id="basic-batting">
+  <h2>第一章・基礎打擊指標</h2>
+
+  <div class="stat-card">
+    <h3>打擊率 AVG (Batting Average)</h3>
+    <p class="formula">AVG = 安打數 ÷ 打數</p>
+    <p>最古老的打擊指標。問題：把一壘安打和全壘打看成一樣的價值，也完全不考慮「保送」。</p>
+    <table class="scale-table">
+      <tr><th>AVG</th><th>評價</th></tr>
+      <tr><td>&gt; .300</td><td>優秀（打擊王等級）</td></tr>
+      <tr><td>.270 - .300</td><td>平均以上</td></tr>
+      <tr><td>.240 - .270</td><td>聯盟平均</td></tr>
+      <tr><td>&lt; .220</td><td>偏弱</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>上壘率 OBP (On-Base Percentage)</h3>
+    <p class="formula">OBP = (安打 + 保送 + 觸身球) ÷ (打數 + 保送 + 觸身球 + 高飛犧牲打)</p>
+    <p>衡量「不出局的能力」。《魔球》(Moneyball) 一書讓 OBP 受到重視的關鍵原因：上壘率跟球隊得分的相關性，比打擊率高得多。</p>
+    <table class="scale-table">
+      <tr><th>OBP</th><th>評價</th></tr>
+      <tr><td>&gt; .390</td><td>優秀（MVP級選眼）</td></tr>
+      <tr><td>.350 - .390</td><td>平均以上</td></tr>
+      <tr><td>.310 - .350</td><td>聯盟平均</td></tr>
+      <tr><td>&lt; .300</td><td>偏弱</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>長打率 SLG (Slugging Percentage)</h3>
+    <p class="formula">SLG = 總壘打數 ÷ 打數　　(一安=1壘、二安=2壘、三安=3壘、全壘打=4壘)</p>
+    <p>衡量「打多遠」，反映威力型打者的價值。</p>
+    <table class="scale-table">
+      <tr><th>SLG</th><th>評價</th></tr>
+      <tr><td>&gt; .520</td><td>優秀（重砲打者）</td></tr>
+      <tr><td>.450 - .520</td><td>平均以上</td></tr>
+      <tr><td>.390 - .450</td><td>聯盟平均</td></tr>
+      <tr><td>&lt; .380</td><td>偏弱</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>整體攻擊指數 OPS (On-base Plus Slugging)</h3>
+    <p class="formula">OPS = OBP + SLG</p>
+    <p>把上壘能力與長打能力相加，是目前轉播最常見的綜合指標。一般來說：</p>
+    <table class="scale-table">
+      <tr><th>OPS</th><th>評價</th></tr>
+      <tr><td>&gt; 1.000</td><td>聯盟頂級 (MVP 級)</td></tr>
+      <tr><td>0.800 - 1.000</td><td>明星級</td></tr>
+      <tr><td>0.700 - 0.800</td><td>聯盟平均</td></tr>
+      <tr><td>&lt; 0.700</td><td>偏弱</td></tr>
+    </table>
+  </div>
+
+  <div class="example-box">
+    <strong>範例：2025 道奇隊團隊打擊數據</strong>
+    <div id="dodgers-batting-table"></div>
+  </div>
+</section>
+
+<!-- ===================== 第二章 ===================== -->
+<section id="basic-pitching">
+  <h2>第二章・基礎投手指標</h2>
+
+  <div class="stat-card">
+    <h3>防禦率 ERA (Earned Run Average)</h3>
+    <p class="formula">ERA = (自責分 ÷ 投球局數) × 9</p>
+    <p>平均每 9 局會被打下幾分自責分。數字越低越好。問題：受隊友守備能力影響很大——同樣的球，遇到好守備可能是出局，遇到差守備就變成安打+失分。</p>
+    <table class="scale-table">
+      <tr><th>ERA</th><th>評價</th></tr>
+      <tr><td>&lt; 3.00</td><td>王牌級（賽揚等級）</td></tr>
+      <tr><td>3.00 - 3.75</td><td>優秀</td></tr>
+      <tr><td>3.75 - 4.50</td><td>聯盟平均</td></tr>
+      <tr><td>&gt; 4.50</td><td>偏弱</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>每局被上壘率 WHIP (Walks + Hits per Inning Pitched)</h3>
+    <p class="formula">WHIP = (被保送 + 被安打) ÷ 投球局數</p>
+    <p>平均每局讓幾名打者上壘。WHIP 越低，代表投手讓對手「站上壘包」的機會越少。&lt; 1.20 通常算優秀。</p>
+    <table class="scale-table">
+      <tr><th>WHIP</th><th>評價</th></tr>
+      <tr><td>&lt; 1.10</td><td>優秀</td></tr>
+      <tr><td>1.10 - 1.25</td><td>平均以上</td></tr>
+      <tr><td>1.25 - 1.40</td><td>聯盟平均</td></tr>
+      <tr><td>&gt; 1.40</td><td>偏弱</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>三振率與保送率 K% / BB%</h3>
+    <p class="formula">K% = 三振數 ÷ 面對打者數　　BB% = 保送數 ÷ 面對打者數</p>
+    <p>用「面對打者數」當分母，比傳統的 K/9（每九局三振數）更穩定，是進階分析的基本單位。</p>
+    <table class="scale-table">
+      <tr><th>K%</th><th>評價</th><th>BB%</th><th>評價</th></tr>
+      <tr><td>&gt; 28%</td><td>王牌級三振能力</td><td>&lt; 5%</td><td>控球極佳</td></tr>
+      <tr><td>22% - 28%</td><td>優秀</td><td>5% - 7%</td><td>優秀</td></tr>
+      <tr><td>18% - 22%</td><td>聯盟平均</td><td>7% - 9%</td><td>聯盟平均</td></tr>
+      <tr><td>&lt; 15%</td><td>偏弱</td><td>&gt; 11%</td><td>控球差</td></tr>
+    </table>
+  </div>
+
+  <div class="example-box">
+    <strong>範例：2025 道奇隊團隊投手數據</strong>
+    <div id="dodgers-pitching-table"></div>
+  </div>
+</section>
+
+<!-- ===================== 第三章 ===================== -->
+<section id="adv-batting">
+  <h2>第三章・進階打擊指標</h2>
+
+  <div class="stat-card">
+    <h3>加權上壘率 wOBA (Weighted On-Base Average)</h3>
+    <p class="formula">wOBA = (0.69×BB + 0.72×HBP + 0.89×1B + 1.27×2B + 1.62×3B + 2.10×HR) ÷ 打席數</p>
+    <p>
+      OPS 的盲點是「直接把 OBP 跟 SLG 加起來」，但其實一個壘打數的「保送」和一個壘打數的「一安」對球隊得分的貢獻並不相同。
+      wOBA 透過統計模型，依照每種上壘事件對「期望得分」的實際貢獻給予不同權重，是目前最廣泛使用的單一打擊指標，尺度跟 OBP 接近（聯盟平均約 .320）。
+    </p>
+    <table class="scale-table">
+      <tr><th>wOBA</th><th>評價</th></tr>
+      <tr><td>&gt; .400</td><td>MVP 級</td></tr>
+      <tr><td>.370 - .400</td><td>明星級</td></tr>
+      <tr><td>.320 - .340</td><td>聯盟平均</td></tr>
+      <tr><td>&lt; .300</td><td>偏弱</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>加權跑分創造值+ wRC+ (Weighted Runs Created Plus)</h3>
+    <p class="formula">wRC+：以 100 為聯盟平均，並校正球場與年代差異</p>
+    <p>wRC+ = 120 代表這名打者的進攻貢獻比聯盟平均高 20%。因為經過球場校正（例如校正科羅拉多高海拔球場的打者天堂效應），可以跨年代、跨球隊公平比較。</p>
+    <table class="scale-table">
+      <tr><th>wRC+</th><th>評價</th></tr>
+      <tr><td>&gt; 140</td><td>MVP 級</td></tr>
+      <tr><td>115 - 140</td><td>明星級</td></tr>
+      <tr><td>90 - 110</td><td>聯盟平均（100為基準）</td></tr>
+      <tr><td>&lt; 80</td><td>偏弱</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>純長打率 ISO (Isolated Power)</h3>
+    <p class="formula">ISO = SLG - AVG</p>
+    <p>扣除一般安打後的「額外長打能力」。ISO 越高，代表打者越倚賴長打（二壘安打、三壘安打、全壘打）製造壘打數。</p>
+    <table class="scale-table">
+      <tr><th>ISO</th><th>評價</th></tr>
+      <tr><td>&gt; .250</td><td>重砲級長打力</td></tr>
+      <tr><td>.180 - .250</td><td>優秀</td></tr>
+      <tr><td>.130 - .180</td><td>聯盟平均</td></tr>
+      <tr><td>&lt; .100</td><td>偏弱（缺乏長打）</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>場內球安打率 BABIP (Batting Average on Balls In Play)</h3>
+    <p class="formula">BABIP = (安打 - 全壘打) ÷ (打數 - 三振 - 全壘打 + 高飛犧牲打)</p>
+    <p>排除三振和全壘打後的安打率。聯盟平均約在 .290 - .300。如果某打者/投手的 BABIP 大幅偏離平均，常被視為「運氣成分」或「防守佈陣」影響的訊號，是判斷數據能否延續的重要工具。</p>
+    <table class="scale-table">
+      <tr><th>BABIP</th><th>解讀</th></tr>
+      <tr><td>&gt; .330</td><td>可能運氣偏高，未來有回落風險</td></tr>
+      <tr><td>.290 - .310</td><td>聯盟平均區間</td></tr>
+      <tr><td>&lt; .270</td><td>可能運氣偏低，未來數據可能回升</td></tr>
+    </table>
+  </div>
+
+  <div class="example-box" id="ohtani-woba-example">
+    <strong>計算範例：用大谷翔平 2025 真實數據算 ISO、BABIP、wOBA</strong>
+    <p>讀取中...</p>
+  </div>
+</section>
+
+<!-- ===================== 第四章 ===================== -->
+<section id="adv-pitching">
+  <h2>第四章・進階投手指標</h2>
+
+  <div class="stat-card">
+    <h3>獨立防禦率 FIP (Fielding Independent Pitching)</h3>
+    <p class="formula">FIP = (13×HR + 3×(BB+HBP) - 2×K) ÷ 投球局數 + 常數(約3.10)</p>
+    <p>
+      ERA 的問題是「受隊友守備影響」。FIP 只計算投手「最能控制」的三件事：被全壘打、保送/觸身球、三振，
+      完全排除場內球的結果（守備好壞）。FIP 跟 ERA 的尺度刻意設計成一樣（聯盟平均約 4.00 左右），方便直接比較：
+      若 FIP 遠低於 ERA，代表這名投手「被守備拖累」，未來表現可能會回升。
+    </p>
+    <table class="scale-table">
+      <tr><th>FIP</th><th>評價</th></tr>
+      <tr><td>&lt; 3.20</td><td>王牌級</td></tr>
+      <tr><td>3.20 - 3.80</td><td>優秀</td></tr>
+      <tr><td>3.80 - 4.30</td><td>聯盟平均</td></tr>
+      <tr><td>&gt; 4.50</td><td>偏弱</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>進階版 xFIP / SIERA</h3>
+    <p>
+      <strong>xFIP</strong>：把 FIP 公式中的「實際被全壘打數」換成「依照聯盟平均飛球全壘打率估計的全壘打數」，進一步排除球場/運氣因素。<br><br>
+      <strong>SIERA</strong> (Skill-Interactive ERA)：在 xFIP 基礎上，加入滾地球率、飛球率、跟三振/保送之間「交互作用」的考量（例如：高三振率的投手就算被打出較多場內球，失分風險也較低），是目前對「投手真實能力」估計最精細的公式之一。
+    </p>
+    <table class="scale-table">
+      <tr><th>xFIP / SIERA</th><th>評價</th></tr>
+      <tr><td>&lt; 3.30</td><td>王牌級</td></tr>
+      <tr><td>3.30 - 3.80</td><td>優秀</td></tr>
+      <tr><td>3.80 - 4.30</td><td>聯盟平均</td></tr>
+      <tr><td>&gt; 4.50</td><td>偏弱</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>滾地球率 / 飛球率 GB% FB%</h3>
+    <p>滾地球通常較難形成長打、但容易形成內野安打；飛球容易形成全壘打但也容易形成高飛出局。這個比率常用來判斷投手的「球風」與被全壘打的風險。</p>
+    <table class="scale-table">
+      <tr><th>GB%</th><th>球風</th></tr>
+      <tr><td>&gt; 50%</td><td>滾地球型投手（Ground-ball pitcher）</td></tr>
+      <tr><td>40% - 50%</td><td>均衡型</td></tr>
+      <tr><td>&lt; 35%</td><td>飛球型投手（Fly-ball pitcher，需注意被全壘打風險）</td></tr>
+    </table>
+  </div>
+
+  <div class="example-box" id="yamamoto-fip-example">
+    <strong>計算範例：用山本由伸 2025 真實數據算 FIP</strong>
+    <p>讀取中...</p>
+  </div>
+</section>
+
+<!-- ===================== 第五章 ===================== -->
+<section id="statcast">
+  <h2>第五章・Statcast 數據 (2015年後的物理追蹤數據)</h2>
+  <p>Statcast 用雷達與光學追蹤系統，記錄每一顆球的「物理數據」，而不只是結果。這是目前最前沿的分析層級。</p>
+
+  <div class="stat-card">
+    <h3>出球速度 EV (Exit Velocity)</h3>
+    <p>球棒擊中球的瞬間速度（mph）。是打者「擊球品質」最直接的指標，跟受傷或運氣完全無關。</p>
+    <table class="scale-table">
+      <tr><th>平均 EV</th><th>評價</th></tr>
+      <tr><td>&gt; 92 mph</td><td>頂級擊球品質</td></tr>
+      <tr><td>89 - 92 mph</td><td>優秀</td></tr>
+      <tr><td>87 - 89 mph</td><td>聯盟平均</td></tr>
+      <tr><td>&lt; 85 mph</td><td>偏弱</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>擊球角度 LA (Launch Angle)</h3>
+    <p>球離開球棒時與地面的夾角。研究發現，<strong>角度在 8°~32° 之間</strong>且出球速度夠快時，最容易形成「強勁飛球」甚至全壘打——這也是近年「飛球革命 (Fly Ball Revolution)」的數據基礎。</p>
+    <table class="scale-table">
+      <tr><th>LA</th><th>球的性質</th></tr>
+      <tr><td>&lt; 10°</td><td>滾地球（Ground ball）</td></tr>
+      <tr><td>10° - 25°</td><td>「甜蜜區」線飛球/平飛球，最容易形成安打</td></tr>
+      <tr><td>25° - 50°</td><td>飛球，可能是全壘打或高飛出局</td></tr>
+      <tr><td>&gt; 50°</td><td>內野高飛球，幾乎必出局</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>重砲區 Barrel%</h3>
+    <p>同時符合「出球速度」與「擊球角度」黃金組合的擊球，被定義為 Barrel（重砲球）。Barrel% = Barrel 數 ÷ 打席數，是預測長打能力最強的單一指標之一。</p>
+    <table class="scale-table">
+      <tr><th>Barrel%</th><th>評價</th></tr>
+      <tr><td>&gt; 12%</td><td>頂級重砲打者</td></tr>
+      <tr><td>8% - 12%</td><td>優秀</td></tr>
+      <tr><td>5% - 8%</td><td>聯盟平均</td></tr>
+      <tr><td>&lt; 3%</td><td>偏弱（長打火力不足）</td></tr>
+    </table>
+  </div>
+
+  <div class="stat-card">
+    <h3>預期數據 xBA / xSLG / xwOBA</h3>
+    <p>
+      根據每一顆球的出球速度、角度（有時加上方向），用大數據模型估算「平均而言這類球會產生什麼結果」，
+      得出 <strong>xBA</strong>（預期打擊率）、<strong>xSLG</strong>（預期長打率）、<strong>xwOBA</strong>（預期wOBA）。
+      如果實際數據遠低於預期值，代表這名打者「被守備佈陣/運氣壓低」，反之則可能是「運氣加成」，未來會回歸。
+    </p>
+    <table class="scale-table">
+      <tr><th>xwOBA</th><th>評價</th></tr>
+      <tr><td>&gt; .400</td><td>MVP 級擊球品質</td></tr>
+      <tr><td>.360 - .400</td><td>明星級</td></tr>
+      <tr><td>.310 - .330</td><td>聯盟平均</td></tr>
+      <tr><td>&lt; .300</td><td>偏弱</td></tr>
+    </table>
+    <p>實戰判讀：<strong>實際wOBA - xwOBA &gt; +0.020</strong> 通常代表運氣偏好；<strong>&lt; -0.020</strong> 代表運氣偏差，數據可能向 xwOBA 回歸。</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>轉速 Spin Rate</h3>
+    <p>球的旋轉速度（rpm）。高轉速速球會讓球「下墜得比預期少」，產生視覺上的「飄浮感」；高轉速曲球則會讓下墜幅度更大。是投手球種設計的核心數據。</p>
+    <table class="scale-table">
+      <tr><th>四縫線速球轉速</th><th>評價</th></tr>
+      <tr><td>&gt; 2400 rpm</td><td>高轉速（明顯飄浮感）</td></tr>
+      <tr><td>2100 - 2400 rpm</td><td>聯盟平均</td></tr>
+      <tr><td>&lt; 2000 rpm</td><td>低轉速（球路下墜較明顯，常搭配伸卡球使用）</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===================== 第六章 ===================== -->
+<section id="case-study">
+  <h2>第六章・實戰案例：大谷翔平 2025 打擊數據</h2>
+  <p>用第五章學到的 Statcast 概念，來看大谷翔平 2025 賽季的真實逐球數據（共 3,010 球）。</p>
+
+  <div class="example-box" id="ohtani-overall"></div>
+
+  <h3>各球種：揮空率 vs xwOBA</h3>
+  <p>下圖中，柱狀代表大谷面對每種球路的「揮空率」（揮棒落空的比例），折線代表他打到這種球路後的「xwOBA」（預期表現）。</p>
+  <canvas id="pitchChart" height="120"></canvas>
+
+  <h3>投手最有效的「球種 + 落點」組合</h3>
+  <p>下表是讓大谷揮空率最高的球種與好球帶位置組合（樣本數 &ge; 10球）。可以看到投手剋制大谷的策略集中在<strong>低位的變化球</strong>。</p>
+  <div id="best-locations-table"></div>
+
+  <h3>好球帶熱點圖</h3>
+  <p>左圖：投手對大谷的攻擊位置分布。右圖：大谷打出二壘安打/三壘安打/全壘打的來球位置。</p>
+  <img src="../ohtani_zone_swing.png" alt="大谷好球帶熱點圖" class="zone-image">
+
+  <div class="callout">
+    <strong>讀圖小結：</strong> 投手最常攻擊好球帶下緣，這正好對應到大谷對「低位變化球」揮空率偏高；
+    但他真正「咬中」、轟出長打的球，多落在好球帶中段到偏高的區域——也就是速球被放進好打區時的代價。
+  </div>
+</section>
+
+<!-- ===================== 延伸閱讀 ===================== -->
+<section id="resources">
+  <h2>延伸閱讀</h2>
+  <ul class="resource-list">
+    <li><strong>《魔球》Moneyball</strong> - Michael Lewis，OBP 革命的起點，普及讀物</li>
+    <li><strong>The Book: Playing the Percentages in Baseball</strong> - Tango/Lichtman/Dolphin，wOBA、UZR 等理論基礎</li>
+    <li><strong>FanGraphs Glossary</strong> (fangraphs.com) - 每個進階指標的官方定義與計算公式</li>
+    <li><strong>Baseball Savant</strong> (baseballsavant.mlb.com) - Statcast 官方數據視覺化平台</li>
+    <li><strong>運動視界</strong> - 中文棒球數據分析文章</li>
+  </ul>
+  <div class="callout">
+    <strong>下一步：</strong> 之後可以擴充成輸入任意球員名字、即時查詢其進階數據的互動工具（需要後端 API）。
+  </div>
+</section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
